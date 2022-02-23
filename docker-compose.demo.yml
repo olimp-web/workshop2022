@@ -2,7 +2,6 @@ services:
   django-backend:
 #    container_name: app_backend
     image: registry.demo.improve.studio/workshop_backend:latest
-    build: .
     command: "python manage.py runserver 0.0.0.0:80"
     volumes:
       - ./src/:/srv/
@@ -13,11 +12,15 @@ services:
       - .django.env
     depends_on:
       - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.registry.rule=Host(`olimp-web.demo.improve.studio`)"
+      - "traefik.http.routers.registry.entrypoints=websecure"
+      - "traefik.http.routers.registry.tls.certresolver=myresolver"
+      - "traefik.http.routers.registry.middlewares=traefik-compress"
   db:
     image: postgres:12.0-alpine
     volumes:
       - ./app_data/postgres/:/var/lib/postgresql/data/
     env_file:
       - .db.env
-    ports:
-      - 5432:5432
