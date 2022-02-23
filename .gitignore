@@ -1,0 +1,4 @@
+app_data
+.idea
+*.pyc
+*.env

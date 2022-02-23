@@ -1,0 +1,22 @@
+services:
+  django-backend:
+#    container_name: app_backend
+    build: .
+    command: "python manage.py runserver 0.0.0.0:80"
+    volumes:
+      - ./src/:/srv/
+      - ./app_data/django/:/data/
+    ports:
+      - 8090:80
+    env_file:
+      - .django.env
+    depends_on:
+      - db
+  db:
+    image: postgres:12.0-alpine
+    volumes:
+      - ./app_data/postgres/:/var/lib/postgresql/data/
+    env_file:
+      - .db.env
+    ports:
+      - 5432:5432
